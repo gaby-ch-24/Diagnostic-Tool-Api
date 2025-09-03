@@ -2,9 +2,9 @@ import "dotenv/config";
 import Fastify from "fastify";
 import helmet from "@fastify/helmet";
 import cors from "@fastify/cors";
-import metricsPlugin, { apiRequestCounter } from "./plugins/metrics.js";
-import routes from "./routes/scans.js";
-import authRoutes from "./routes/auth.js";
+import metricsPlugin, { apiRequestCounter } from "./src/plugins/metrics.js";
+import routes from "./src/routes/scans.js";
+import authRoutes from "./src/routes/auth.js";
 
 const app = Fastify({ logger: true });
 await app.register(helmet);
