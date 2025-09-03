@@ -1,0 +1,19 @@
+# deps & builds
+node_modules/
+.next/
+dist/
+out/
+coverage/
+*.log
+
+# env & system
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# monorepo extras (if any)
+apps/*/node_modules/
+packages/*/node_modules/
+turbo/
+.pnpm-store/
