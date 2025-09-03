@@ -17,3 +17,4 @@ apps/*/node_modules/
 packages/*/node_modules/
 turbo/
 .pnpm-store/
+.vercel
