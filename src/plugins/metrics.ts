@@ -1,20 +1,24 @@
-import type { FastifyPluginAsync } from 'fastify';
-import client from 'prom-client';
+import { Request, Response, NextFunction } from "express";
+import client from "prom-client";
 
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics();
 
 export const apiRequestCounter = new client.Counter({
-  name: 'api_requests_total',
-  help: 'Total number of API requests',
-  labelNames: ['route', 'method', 'status']
+  name: "api_requests_total",
+  help: "Total number of API requests",
+  labelNames: ["route", "method", "status"],
 });
 
-const metricsPlugin: FastifyPluginAsync = async (app) => {
-  app.get('/metrics', async (_req, reply) => {
-    const body = await client.register.metrics();
-    reply.type(client.register.contentType).send(body);
-  });
+const metricsPlugin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.path === "/metrics") {
+    client.register.metrics().then((body) => {
+      res.set("Content-Type", client.register.contentType);
+      res.send(body);
+    });
+  } else {
+    next();
+  }
 };
 
 export default metricsPlugin;

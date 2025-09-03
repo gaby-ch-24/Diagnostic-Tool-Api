@@ -1,23 +1,24 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 export function requireAuth(role?: string) {
-  return async (req: FastifyRequest, reply: FastifyReply) => {
-    const auth = req.headers['authorization'];
-    if (!auth || !auth.startsWith('Bearer ')) {
-      return reply.code(401).send({ error: 'Unauthorized' });
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const auth = req.headers["authorization"];
+    if (!auth || !auth.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
     try {
       const token = auth.slice(7);
       const payload = jwt.verify(token, JWT_SECRET) as any;
       if (role && payload.role !== role) {
-        return reply.code(403).send({ error: 'Forbidden' });
+        return res.status(403).json({ error: "Forbidden" });
       }
       (req as any).user = payload;
+      next();
     } catch (err) {
-      return reply.code(401).send({ error: 'Invalid token' });
+      return res.status(401).json({ error: "Invalid token" });
     }
   };
 }
