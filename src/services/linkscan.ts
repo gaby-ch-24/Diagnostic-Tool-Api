@@ -40,7 +40,11 @@ async function checkOne(url: string): Promise<LinkResult> {
       r = await fetch(url, { method: 'GET', redirect: 'follow' as any });
     }
     const ok = r.status < 400;
-    return { url, ok, statusCode: r.status, statusText: r.statusText, redirected: r.redirected };
+    let error: string | undefined = undefined;
+    if (!ok) {
+      error = `HTTP ${r.status} - ${r.statusText}`;
+    }
+    return { url, ok, statusCode: r.status, statusText: r.statusText, redirected: r.redirected, error };
   } catch (e:any) {
     return { url, ok: false, error: String(e) };
   }

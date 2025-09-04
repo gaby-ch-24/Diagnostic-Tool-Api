@@ -5,6 +5,7 @@ import cors from "cors";
 import metricsPlugin, { apiRequestCounter } from "./plugins/metrics.js";
 import routes from "./routes/scans.js";
 import authRoutes from "./routes/auth.js";
+import { startScanWorker } from "./workers/scanner.js";
 
 const app = express();
 
@@ -32,7 +33,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Start the worker
+startScanWorker();
+
 const port = Number(process.env.PORT || 8080);
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server listening on port ${port}`);
+  console.log(`Worker started and listening for scan jobs`);
 });
